@@ -8,9 +8,9 @@ const Product = {
             thumbnail: Thumbnail,
             code: Code,
             stock: Stock
-        };
+        }
     }
-};
+}
 
 class ProductManager {
     constructor () {
