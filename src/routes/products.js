@@ -1,4 +1,4 @@
-const express = require('express')
+/*const express = require('express')
 const router = express.Router()
 const fs = require('fs')
 
@@ -126,4 +126,93 @@ router.delete('/:pid', (req, res) => {
     }
 })
 
+module.exports = router*/
+
+// Codigo nuevo
+
+const express = require('express')
+const router = express.Router()
+const fs = require('fs')
+const ProductManager = require('./ProductManager')
+
+const productManager = new ProductManager('productos.json')
+
+router.get('/', async (req, res) => {
+    try {
+        const products = await productManager.getProducts()
+        res.status(200).json(products)
+    } catch (error) {
+        console.error('Ocurrió un error al obtener los productos:', error)
+        res.status(500).json({ error: 'Error del servidor' })
+    }
+})
+
+router.get('/:pid', async (req, res) => {
+    const productId = req.params.pid
+    try {
+        const product = await productManager.getProductById(productId)
+        if (product) {
+            res.json(product)
+        } else {
+            res.status(404).json({ error: 'El producto no fue encontrado' })
+        }
+    } catch (error) {
+        console.error('Ocurrió un error al obtener el producto:', error)
+        res.status(500).json({ error: 'Error del servidor' })
+    }
+})
+
+router.post('/', async (req, res) => {
+    const { title, description, code, price, stock, category, thumbnails } = req.body
+
+    if (!title || !description || !code || !price || !stock || !category) {
+        return res.status(400).json({ error: 'Hay campos obligatorios faltantes' })
+    }
+
+    try {
+        const newProduct = Product.create(null, title, description, price, thumbnails[0], code, stock)
+        await productManager.addProduct(newProduct)
+        res.status(201).json({ message: 'El producto fue agregado correctamente', product: newProduct })
+    } catch (error) {
+        console.error('Ocurrió un error al agregar el producto:', error)
+        res.status(500).json({ error: 'Error del servidor' })
+    }
+})
+
+router.put('/:pid', async (req, res) => {
+    const productId = parseInt(req.params.pid)
+    const { title, description, code, price, stock, category, thumbnails, status } = req.body
+
+    try {
+        const newData = {
+            title,
+            description,
+            code,
+            price,
+            stock,
+            category,
+            thumbnails,
+            status
+        }
+        await productManager.updateProduct(productId, newData)
+        res.json({ message: 'El producto fue actualizado correctamente', product: { id: productId, ...newData } })
+    } catch (error) {
+        console.error('Ocurrió un error al actualizar el producto:', error)
+        res.status(500).json({ error: 'Error del servidor' })
+    }
+})
+
+router.delete('/:pid', async (req, res) => {
+    const productId = parseInt(req.params.pid)
+
+    try {
+        await productManager.deleteProduct(productId);
+        res.json({ message: 'El producto fue eliminado correctamente' })
+    } catch (error) {
+        console.error('Error al eliminar el producto:', error)
+        res.status(500).json({ error: 'Error del servidor' })
+    }
+});
+
 module.exports = router
+
