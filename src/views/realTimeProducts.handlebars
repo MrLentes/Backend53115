@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Productos en Tiempo Real</title>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        var socket = io()
+
+        socket.on('productAdded', function(product) {
+            var productList = document.getElementById('productList')
+            var newItem = document.createElement('li')
+            newItem.textContent = product.title + ' - ' + product.price
+            productList.appendChild(newItem)
+        });
+
+        socket.on('productDeleted', function(productId) {
+            var productList = document.getElementById('productList')
+            var items = productList.getElementsByTagName('li')
+            for (var i = 0; i < items.length; i++) {
+                var item = items[i]
+                if (item.textContent.includes(productId)) {
+                    item.remove()
+                    break;
+                }
+            }
+        });
+    </script>
+</head>
+<body>
+    <h1>Lista de Productos en Tiempo Real</h1>
+    <ul id="productList">
+        {{#each products}}
+            <li>{{this.title}} - {{this.price}}</li>
+        {{/each}}
+    </ul>
+    <form id="productForm" action="/api/products" method="post">
+        <label for="title">Título:</label>
+        <input type="text" id="title" name="title" required><br>
+        <label for="price">Precio:</label>
+        <input type="number" id="price" name="price" required><br>
+        <button type="submit">Agregar Producto</button>
+    </form>
+</body>
+</html>
