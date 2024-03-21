@@ -11,7 +11,6 @@ const productManager = new ProductManager('products.json')
 
 app.engine('handlebars', exphbs())
 app.set('view engine', 'handlebars')
-
 app.set('views', __dirname + '/views')
 
 app.get('/', async (req, res) => {
@@ -44,9 +43,9 @@ io.on('connection', (socket) => {
     socket.on('createProduct', async (productData) => {
         try {
             await productManager.addProduct(productData)
-            io.emit('productCreated', productData)
-        } 
-        catch (error) {
+            const products = await productManager.getProducts()
+            io.emit('productCreated', products)
+        } catch (error) {
             console.error('Ocurrió un error al crear el producto:', error)
         }
     })
@@ -54,9 +53,9 @@ io.on('connection', (socket) => {
     socket.on('deleteProduct', async (productId) => {
         try {
             await productManager.deleteProduct(productId)
-            io.emit('productDeleted', productId)
-        } 
-        catch (error) {
+            const products = await productManager.getProducts()
+            io.emit('productDeleted', products)
+        } catch (error) {
             console.error('Ocurrió un error al eliminar el producto:', error)
         }
     })
