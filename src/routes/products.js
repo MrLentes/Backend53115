@@ -68,7 +68,7 @@ router.get('/', async (req, res) => {
 })
 
 router.get('/:pid', async (req, res) => {
-    const productId = req.params.pid;
+    const productId = req.params.pid
     try {
         const product = await Product.findById(productId)
         if (product) {
