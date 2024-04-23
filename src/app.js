@@ -5,13 +5,14 @@ const http = require('http')
 const socketIo = require('socket.io')
 const Product = require('./dao/Models/Product')
 const Cart = require('./dao/Models/Cart')
-require('dotenv').config()
+//require('dotenv').config()
 
+const MONGODB_URI = 'mongodb+srv://ValverdeJose:coderpass@cluster0.bheplaf.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0'
 const app = express()
 const server = http.createServer(app)
 const io = socketIo(server)
 
-mongoose.connect(process.env.MONGODB_URI, {
+mongoose.connect(MONGODB_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true
 }).then(() => {
@@ -21,7 +22,7 @@ mongoose.connect(process.env.MONGODB_URI, {
     process.exit(1)
 })
 
-app.engine('handlebars', exphbs())
+app.engine('handlebars', exphbs.engine())
 app.set('view engine', 'handlebars')
 app.set('views', __dirname + '/views')
 

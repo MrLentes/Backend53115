@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const Cart = require('../dao/Models/Cart')
-const Product = require('../dao/Models/Products')
+const Product = require('../dao/Models/Product')
 
 router.post('/', async (req, res) => {
     try {
