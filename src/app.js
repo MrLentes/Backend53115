@@ -5,10 +5,10 @@ const http = require('http')
 const socketIo = require('socket.io')
 //require('dotenv').config()
 const session = require('express-session')
-const MongoStore = require('connect-mongo')(session)
+const MongoStore = require('connect-mongo')
 const productsRouter = require('./routes/products')
 const cartsRouter = require('./routes/carts')
-const usersrouter = require('./routes/users')
+const usersRouter = require('./routes/users')
 const Product = require('./dao/Models/Product')
 const Cart = require('./dao/Models/Cart')
 const User = require('./dao/Models/User')
@@ -87,22 +87,14 @@ app.use(session({
   secret: 'mysecret',
   resave: false,
   saveUninitialized: false,
-  store: new MongoStore({ mongooseConnection: mongoose.connection }),
+  store: new MongoStore({ mongoUrl: MONGODB_URI,
+    ttl: 24 * 60 * 60, }),
   cookie: { maxAge: 1000 * 60 * 60 * 24 } 
 }))
 
 app.use(express.json())
 
-app.use('/users', usersRouter)
-
-mongoose.connect('mongodb://localhost/mydatabase', {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-}).then(() => {
-  console.log('Conexión a MongoDB establecida')
-}).catch((error) => {
-  console.error('Error al conectar a MongoDB:', error)
-})
+app.use('./routes/users', usersRouter)
 
 app.post('/login', async (req, res) => {
   const { username, password } = req.body
