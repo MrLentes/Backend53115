@@ -37,6 +37,17 @@ app.use(express.json())
 app.use('/api/products', productsRouter)
 app.use('/api/carts', cartsRouter)
 
+async function hashPassword(password) {
+  try {
+      const salt = await bcrypt.genSalt(10)
+      const hash = await bcrypt.hash(password, salt)
+      return hash
+  } catch (error) {
+      console.error('Error al hashear la contraseña:', error)
+      throw new Error('Error al hashear la contraseña')
+  }
+}
+
 app.get('/', async (req, res) => {
   try {
       const products = await Product.find()
@@ -111,6 +122,17 @@ app.post('/logout', (req, res) => {
   delete req.session.userId
 
   res.redirect('/login')
+})
+
+app.post('/register', async (req, res) => {
+  try {
+      const { username, password } = req.body
+      const newUser = await User.create({ username, password: hashedPassword })
+      res.send('Usuario registrado correctamente')
+  } catch (error) {
+      console.error('Error al registrar usuario:', error)
+      res.status(500).send('Error del servidor')
+  }
 })
 
 const PORT = process.env.PORT || 8080
