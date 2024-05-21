@@ -2,10 +2,15 @@ const mongoose = require('mongoose')
 const bcrypt = require('bcrypt')
 
 const userSchema = new mongoose.Schema({
-    username: { type: String, required: true, unique: true },
-    password: { type: String, required: true },
+    first_name: { type: String, required: true },
+    last_name: { type: String, required: true },
     email: { type: String, required: true, unique: true },
-})
+    age: { type: Number, required: true },
+    password: { type: String, required: true },
+    cart: { type: mongoose.Schema.Types.ObjectId, ref: 'Cart' },
+    role: { type: String, default: 'user' },
+    githubId: { type: String, unique: true, sparse: true }
+  })
 
 userSchema.pre('save', async function (next) {
     try {
@@ -18,7 +23,7 @@ userSchema.pre('save', async function (next) {
     } catch (error) {
         next(error)
     }
-});
+})
 
 const User = mongoose.model('User', userSchema)
 
