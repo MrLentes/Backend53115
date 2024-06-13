@@ -1,3 +1,4 @@
+const logger = require('../config/logger')
 const Product = require('../dao/Models/Product')
 const { CustomError } = require('../middlewares/errorHandler')
 const errorDictionary = require('../utils/errorDictionary')
@@ -7,7 +8,7 @@ exports.getAllProducts = async (req, res) => {
         const products = await Product.find()
         res.json(products)
     } catch (error) {
-        console.error('Error getting products:', error)
+        logger.error('Error getting products:', error)
         res.status(500).send('Server error')
     }
 }
@@ -20,7 +21,7 @@ exports.getProductById = async (req, res) => {
         }
         res.json(product)
     } catch (error) {
-        console.error('Error getting product:', error)
+        logger.error('Error getting product:', error)
         res.status(500).send('Server error')
     }
 }
@@ -31,7 +32,7 @@ exports.createProduct = async (req, res) => {
         await newProduct.save()
         res.status(201).json(newProduct)
     } catch (error) {
-        console.error('Error creating product:', error)
+        logger.error('Error creating product:', error)
         res.status(500).send('Server error')
     }
 }
@@ -44,7 +45,7 @@ exports.updateProduct = async (req, res) => {
         }
         res.json(product)
     } catch (error) {
-        console.error('Error updating product:', error)
+        logger.error('Error updating product:', error)
         res.status(500).send('Server error')
     }
 }
@@ -57,7 +58,7 @@ exports.deleteProduct = async (req, res) => {
         }
         res.send('Product deleted')
     } catch (error) {
-        console.error('Error deleting product:', error)
+        logger.error('Error deleting product:', error)
         res.status(500).send('Server error')
     }
 }

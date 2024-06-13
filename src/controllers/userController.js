@@ -1,3 +1,4 @@
+const logger = require('../config/logger')
 const User = require('../dao/Models/User')
 const bcrypt = require('bcrypt')
 
@@ -6,7 +7,7 @@ exports.getAllUsers = async (req, res) => {
         const users = await User.find()
         res.json(users)
     } catch (error) {
-        console.error('Error getting users:', error)
+        logger.error('Error getting users:', error)
         res.status(500).send('Server error')
     }
 }
@@ -19,7 +20,7 @@ exports.getUserById = async (req, res) => {
         }
         res.json(user)
     } catch (error) {
-        console.error('Error getting user:', error)
+        logger.error('Error getting user:', error)
         res.status(500).send('Server error')
     }
 }
@@ -39,7 +40,7 @@ exports.createUser = async (req, res) => {
         await newUser.save()
         res.status(201).json(newUser)
     } catch (error) {
-        console.error('Error creating user:', error)
+        logger.error('Error creating user:', error)
         res.status(500).send('Server error')
     }
 }
@@ -52,7 +53,7 @@ exports.updateUser = async (req, res) => {
         }
         res.json(user)
     } catch (error) {
-        console.error('Error updating user:', error)
+        logger.error('Error updating user:', error)
         res.status(500).send('Server error')
     }
 }
@@ -65,7 +66,7 @@ exports.deleteUser = async (req, res) => {
         }
         res.send('User deleted')
     } catch (error) {
-        console.error('Error deleting user:', error)
+        logger.error('Error deleting user:', error)
         res.status(500).send('Server error')
     }
 }

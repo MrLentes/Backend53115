@@ -1,3 +1,4 @@
+const logger = require('../config/logger')
 const Cart = require('../dao/Models/Cart')
 const Product = require('../dao/Models/Product')
 const { CustomError } = require('../middlewares/errorHandler')
@@ -9,7 +10,7 @@ exports.createCart = async (req, res) => {
         await cart.save()
         res.status(201).json(cart)
     } catch (error) {
-        console.error('Error creating cart:', error)
+        logger.error('Error creating cart:', error)
         res.status(500).send('Server error')
     }
 }
@@ -22,7 +23,7 @@ exports.getCart = async (req, res) => {
         }
         res.json(cart)
     } catch (error) {
-        console.error('Error getting cart:', error)
+        logger.error('Error getting cart:', error)
         res.status(500).send('Server error')
     }
 }
@@ -42,7 +43,7 @@ exports.addToCart = async (req, res) => {
         await cart.save()
         res.json(cart)
     } catch (error) {
-        console.error('Error adding to cart:', error)
+        logger.error('Error adding to cart:', error)
         res.status(500).send('Server error')
     }
 }
@@ -58,7 +59,7 @@ exports.removeFromCart = async (req, res) => {
         await cart.save()
         res.json(cart)
     } catch (error) {
-        console.error('Error removing from cart:', error)
+        logger.error('Error removing from cart:', error)
         res.status(500).send('Server error')
     }
 }

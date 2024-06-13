@@ -1,6 +1,7 @@
 const passport = require('passport')
 const bcrypt = require('bcrypt')
 const User = require('../dao/Models/User')
+const logger = require('../config/logger')
 
 exports.register = async (req, res) => {
   try {
@@ -9,7 +10,7 @@ exports.register = async (req, res) => {
     const newUser = await User.create({ first_name, last_name, email, age, password: hashedPassword, cart })
     res.send('Usuario registrado correctamente')
   } catch (error) {
-    console.error('Error al registrar usuario:', error)
+    logger.error('Error al registrar usuario:', error)
     res.status(500).send('Error del servidor')
   }
 }
