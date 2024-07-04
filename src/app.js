@@ -14,6 +14,7 @@ const { generateMockProducts } = require('./src/utils/mocking')
 const { errorHandler } = require('./src/middlewares/errorHandler')
 const Product = require('./src/dao/models/Product')
 const logger = require('./src/config/logger')
+const setupSwaggerDocs = require('./src/config/swaggerConfig')
 
 const MONGODB_URI = 'mongodb+srv://ValverdeJose:coderpass@cluster0.bheplaf.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0'
 const app = express()
@@ -145,6 +146,8 @@ app.get('/loggerTest', (req, res) => {
     logger.fatal('Fatal log')
     res.send('Logs generados, revisa la consola y el archivo errors.log')
 })
+
+setupSwaggerDocs(app)
 
 app.use(errorHandler)
 
