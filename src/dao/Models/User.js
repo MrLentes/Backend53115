@@ -8,9 +8,11 @@ const userSchema = new mongoose.Schema({
     age: { type: Number, required: true },
     password: { type: String, required: true },
     cart: { type: mongoose.Schema.Types.ObjectId, ref: 'Cart' },
-    role: { type: String, default: 'user' },
-    githubId: { type: String, unique: true, sparse: true }
-  })
+    role: { type: String, enum: ['user', 'premium', 'admin'], default: 'user' },
+    githubId: { type: String, unique: true, sparse: true },
+    resetPasswordToken: { type: String },
+    resetPasswordExpires: { type: Date }
+})
 
 userSchema.pre('save', async function (next) {
     try {
@@ -24,6 +26,10 @@ userSchema.pre('save', async function (next) {
         next(error)
     }
 })
+
+userSchema.methods.comparePassword = function(password) {
+    return bcrypt.compareSync(password, this.password);
+}
 
 const User = mongoose.model('User', userSchema)
 
