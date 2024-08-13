@@ -3,14 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lista de Productos</title>
+    <title>Productos</title>
 </head>
 <body>
-    <h1>Lista de Productos</h1>
-    <ul>
+    <h1>Productos</h1>
+    <div class="product-list">
         {{#each products}}
-            <li>{{this.title}} - {{this.price}}</li>
+        <div class="product-item">
+            <img src="{{this.imageUrl}}" alt="{{this.name}}">
+            <h3>{{this.name}}</h3>
+            <p>Precio: ${{this.price}}</p>
+            <form action="/cart/add/{{this._id}}" method="post">
+                <button type="submit">Adñadir al carrito</button>
+            </form>
+        </div>
         {{/each}}
-    </ul>
+    </div>
 </body>
 </html>

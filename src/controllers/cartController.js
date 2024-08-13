@@ -1,6 +1,7 @@
 const logger = require('../config/logger')
 const Cart = require('../dao/Models/Cart')
 const Product = require('../dao/Models/Product')
+const User = require('../dao/Models/User')
 const { CustomError } = require('../middlewares/errorHandler')
 const errorDictionary = require('../utils/errorDictionary')
 
@@ -35,10 +36,18 @@ exports.addToCart = async (req, res) => {
         if (!cart) {
             return res.status(404).send('Cart not found')
         }
+        
         const product = await Product.findById(productId)
         if (!product) {
             return res.status(404).send('Product not found')
         }
+
+        const user = await User.findById(req.user._id) 
+
+        if (user.role === 'premium' && product.owner.toString() === user._id.toString()) {
+            return res.status(403).send('No puedes agregar a tu carrito un producto que te pertenece.')
+        }
+
         cart.products.push({ product: productId, quantity })
         await cart.save()
         res.json(cart)

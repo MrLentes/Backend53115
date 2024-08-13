@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout</title>
+</head>
+<body>
+    <h1>Checkout</h1>
+    <form action="/checkout/complete" method="post">
+        <div>
+            <label for="name">Nombre:</label>
+            <input type="text" id="name" name="name" requerido>
+        </div>
+        <div>
+            <label for="address">Direccion del pedido:</label>
+            <input type="text" id="address" name="address" requerido>
+        </div>
+        <div>
+            <label for="paymentMethod">Metodo de pago:</label>
+            <select id="paymentMethod" name="paymentMethod" requerido>
+                <option value="credit-card">Tarjeta de credito</option>
+                <option value="paypal">PayPal</option>
+            </select>
+        </div>
+        <div class="order-summary">
+            <h3>Pedido</h3>
+            {{#each cartItems}}
+            <div>
+                <p>{{this.name}} - ${{this.price}} x {{this.quantity}}</p>
+            </div>
+            {{/each}}
+            <h3>Total: ${{total}}</h3>
+        </div>
+        <button type="submit">Pagar pedido</button>
+    </form>
+</body>
+</html>

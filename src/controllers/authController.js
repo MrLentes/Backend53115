@@ -15,15 +15,36 @@ exports.register = async (req, res) => {
   }
 }
 
-exports.login = passport.authenticate('local', {
-  successRedirect: '/products',
-  failureRedirect: '/login',
-  failureFlash: true
-})
+exports.login = async (req, res, next) => {
+  passport.authenticate('local', async (err, user, info) => {
+    if (err) return next(err)
+    if (!user) return res.redirect('/login')
 
-exports.logout = (req, res) => {
-  req.logout()
-  res.redirect('/login')
+    user.last_connection = new Date()
+    await user.save()
+
+    req.logIn(user, (err) => {
+      if (err) return next(err)
+      res.redirect('/products')
+    })
+  })(req, res, next)
+}
+
+exports.logout = async (req, res) => {
+  try {
+    const user = req.user
+    if (user) {
+      user.last_connection = new Date()
+      await user.save()
+    }
+
+    req.logout(() => {
+      res.redirect('/login')
+    })
+  } catch (error) {
+    logger.error('Error during logout:', error)
+    res.status(500).send('Error del servidor')
+  }
 }
 
 exports.github = passport.authenticate('github')

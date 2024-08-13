@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pedido</title>
+</head>
+<body>
+    <h1>Su pedido</h1>
+    <div class="cart-items">
+        {{#each cartItems}}
+        <div class="cart-item">
+            <h3>{{this.name}}</h3>
+            <p>Precio: ${{this.price}}</p>
+            <p>Cantidad: {{this.quantity}}</p>
+            <form action="/cart/remove/{{this._id}}" method="post">
+                <button type="submit">RQuitar</button>
+            </form>
+        </div>
+        {{/each}}
+    </div>
+    <div class="cart-summary">
+        <h3>Total: ${{total}}</h3>
+        <a href="/checkout">Confirmar la compra</a>
+    </div>
+</body>
+</html>

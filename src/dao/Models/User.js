@@ -11,7 +11,12 @@ const userSchema = new mongoose.Schema({
     role: { type: String, enum: ['user', 'premium', 'admin'], default: 'user' },
     githubId: { type: String, unique: true, sparse: true },
     resetPasswordToken: { type: String },
-    resetPasswordExpires: { type: Date }
+    resetPasswordExpires: { type: Date },
+    documents: [{
+      name: { type: String, required: true },
+      reference: { type: String, required: true }
+    }],
+    last_connection: { type: Date }
 })
 
 userSchema.pre('save', async function (next) {

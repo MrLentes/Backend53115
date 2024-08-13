@@ -72,27 +72,44 @@ exports.createProduct = async (req, res) => {
     }
   }
 
-exports.deleteProduct = async (req, res) => {
+  exports.deleteProduct = async (req, res) => {
     try {
-      const productId = req.params.id
-      const user = req.user
-  
-      const product = await Product.findById(productId)
-  
-      if (!product) {
-        return res.status(404).json({ message: 'Producto no encontrado' })
-      }
-  
-      if (user.role === 'admin' || (user.role === 'premium' && product.owner.toString() === user._id.toString())) {
-        await product.remove()
-        return res.status(200).json({ message: 'Producto eliminado exitosamente' })
-      } else {
-        return res.status(403).json({ message: 'No tienes permiso para eliminar este producto' })
-      }
+        const productId = req.params.id
+        const product = await Product.findById(productId)
+
+        if (!product) {
+            return res.status(404).json({ message: 'Producto no encontrado' })
+        }
+
+        const owner = await User.findById(product.owner)
+
+        if (owner && owner.role === 'premium') {
+            const transporter = nodemailer.createTransport({
+                service: 'gmail',
+                auth: {
+                    user: process.env.EMAIL_USER,
+                    pass: process.env.EMAIL_PASS,
+                },
+            })
+
+            const mailOptions = {
+                from: process.env.EMAIL_USER,
+                to: owner.email,
+                subject: 'Producto eliminado',
+                text: `Tu producto "${product.name}" ha sido eliminado del sistema.`,
+            }
+
+            await transporter.sendMail(mailOptions)
+        }
+
+        await Product.findByIdAndDelete(productId)
+        res.status(200).json({ message: 'Producto eliminado exitosamente' })
+
     } catch (error) {
-      res.status(500).json({ message: 'Error al eliminar el producto', error })
+        console.error('Error al eliminar el producto:', error)
+        res.status(500).json({ message: 'Error del servidor' })
     }
-  }
+}
 
 module.exports = {
     getAllProducts,

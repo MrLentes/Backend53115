@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirmacion del pedido</title>
+</head>
+<body>
+    <h1>Gracias por su compra!</h1>
+    <p>Su pedido fue exitoso. Aqui esta el pedido:</p>
+    <div class="order-details">
+        <h3>Numero de pedido: {{orderNumber}}</h3>
+        <p>Total: ${{total}}</p>
+        <p>Entrega en: {{shippingAddress}}</p>
+        <p>Estado de la entrega: {{status}}</p>
+    </div>
+    <a href="/orders/{{orderId}}">Ver los detalles de la compra</a>
+</body>
+</html>
