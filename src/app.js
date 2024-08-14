@@ -10,11 +10,15 @@ const authRoutes = require('./src/routes/authRoutes')
 const productRoutes = require('./src/routes/productRoutes')
 const cartRoutes = require('./src/routes/cartRoutes')
 const userRoutes = require('./src/routes/userRoutes')
+const checkoutRoutes = require('./routes/checkout')
+const orderRoutes = require('./routes/orders')
 const { generateMockProducts } = require('./src/utils/mocking')
 const { errorHandler } = require('./src/middlewares/errorHandler')
 const Product = require('./src/dao/models/Product')
 const logger = require('./src/config/logger')
 const setupSwaggerDocs = require('./src/config/swaggerConfig')
+const bodyParser = require('body-parser')
+const path = require('path')
 
 const MONGODB_URI = 'mongodb+srv://ValverdeJose:coderpass@cluster0.bheplaf.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0'
 const app = express()
@@ -38,6 +42,9 @@ app.set('views', __dirname + '/src/views')
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
+app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.json())
+
 app.use(session({
     secret: 'mysecret',
     resave: false,
@@ -53,10 +60,16 @@ app.use('/auth', authRoutes)
 app.use('/api/products', productRoutes)
 app.use('/api/carts', cartRoutes)
 app.use('/users', userRoutes)
+app.use('/checkout', checkoutRoutes)
+app.use('/orders', orderRoutes)
 
 app.get('/mockingproducts', (req, res) => {
     const mockProducts = generateMockProducts()
     res.json(mockProducts)
+})
+
+app.get('/', (req, res) => {
+    res.redirect('/products');
 })
 
 app.get('/', async (req, res) => {
